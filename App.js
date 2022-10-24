@@ -12,12 +12,16 @@ import {
   Pressable,
   Modal,
   Alert,
+  TouchableOpacity
   
 } from "react-native";
-import { SafeAreaView, StyleSheet } from "react-native-web";
+import { StyleSheet, TouchableHighlight } from "react-native-web";
 import pokemonList from "./pokemonList";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import { StatusBar } from "expo-status-bar";
+import WebView from "react-native-webview";
+// import { WebView } from 'react-native-webview';
+
 
 export default function App() {
   const [buscador, setBuscador] = useState("");
@@ -25,6 +29,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isEnable, setIsEnable] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalTouch, setModalTouch] = useState(false)
   const [Url, setUrl] = useState("");
 
   const handleLink = async () => {
@@ -51,11 +56,24 @@ export default function App() {
     }, 2000);
   };
 
+ 
+    
+  
+  
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.pokemonItem}>
         <View style={{ flexDirection: "row" }}>
+          <TouchableOpacity
+          onPress={()=>{
+            setModalTouch(true)
+            setUrl(item.url)
+          }}
+          >
           <Image source={{ uri: item.url }} style={styles.pokemonImage} />
+          </TouchableOpacity>
+          
           <Text style={styles.pokemonName}>{item.name}</Text>
         </View>
         <Pressable
@@ -71,10 +89,9 @@ export default function App() {
     );
   };
 
-  return (
-    <>
-      {/*-------------- MODAL------ */}
-      <View style={styles.centeredView}>
+ const RenderModal = () =>{
+  return <>
+    <View style={styles.centeredView}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -113,17 +130,43 @@ export default function App() {
             </View>
           </View>
         </Modal>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={styles.textStyle}>Show Modal</Text>
-        </Pressable>
+        
       </View>
+  </>
+  
+ }
 
-      {/*-------------- Termina  MODAL------ */}
+ const ModalTouch = () =>{
+  return (
+    <View style={styles.centeredView}>
+    <Modal 
+    visible={modalTouch}
+    animationType="slide"
+    transparent={true} >
+      <View style={styles.viewWebView}>
+        <Pressable onPress={()=>setModalTouch(false)} style={[styles.button, styles.buttonClose]}>
+          <Text style={{fontSize:30}}>X</Text>
+        </Pressable>
+        <WebView source={{uri:Url}} style={{width:300,marginVertical:100}}/>
+      </View>
+    </Modal>
+    </View>
+  )
+ }
+
+
+
+  return (
+    <>
+    {/* ---------------MODAL---------------------- */}
+{RenderModal()} 
+
 
       {/* -----------------CONTENIDO ESTATICO----------------------- */}
+      <StatusBar
+        animated={true}
+        backgroundColor="#B40909"
+        ></StatusBar>
 
       <Image source={require("./images/pokeapi_256.png")} style={styles.logo} />
       <View
@@ -138,10 +181,8 @@ export default function App() {
       </View>
 
       {/* ---------------------RENDERIZADO------------------- */}
-        <StatusBar
-        animated={true}
-        backgroundColor="#B40909"
-        ></StatusBar>
+       
+         {ModalTouch()}  
       <FlatList
         data={pokemones}
         renderItem={renderItem}
@@ -278,4 +319,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
+  viewWebView:{
+    flex:1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    flexDirection:"column",
+    justifyContent:"center",
+    alignItems:"center"
+  }
 });
