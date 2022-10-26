@@ -15,13 +15,18 @@ import {
   TouchableOpacity,
   Vibration,
   Animated,
-  TouchableHighlight,
+  TouchableHighlight
+  
 } from "react-native";
 import { StyleSheet } from "react-native-web";
 import pokemonList from "./pokemonList";
-import { useState, useRef, useEffect } from "react";
+import { useState , useRef, useEffect} from "react";
 import { StatusBar } from "expo-status-bar";
 import WebView from "react-native-webview";
+
+
+
+
 
 export default function App() {
   const [buscador, setBuscador] = useState("");
@@ -29,12 +34,18 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isEnable, setIsEnable] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalTouch, setModalTouch] = useState(false);
+  const [modalTouch, setModalTouch] = useState(false)
   const [Url, setUrl] = useState("");
 
+  
+  
+
+  
   const handleLink = async () => {
     await Linking.openURL(Url);
   };
+
+  
 
   const handleChange = (text) => {
     setBuscador(text);
@@ -54,19 +65,24 @@ export default function App() {
     }, 2000);
   };
 
+ 
+    
+  
+  
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.pokemonItem}>
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity
-            onPress={() => {
-              setModalTouch(true);
-              setUrl(item.url);
-            }}
+          onPress={()=>{
+            setModalTouch(true)
+            setUrl(item.url)
+          }}
           >
-            <Image source={{ uri: item.url }} style={styles.pokemonImage} />
+          <Image source={{ uri: item.url }} style={styles.pokemonImage} />
           </TouchableOpacity>
-
+          
           <Text style={styles.pokemonName}>{item.name}</Text>
         </View>
         <Pressable
@@ -82,104 +98,111 @@ export default function App() {
     );
   };
 
-  const RenderModal = () => {
-    return (
-      <>
-        <View style={styles.centeredView}>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              Alert.alert("Modal has been closed.");
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text>
-                  Si aceptas vamos a abrir tu navegador para mostrarte la
-                  imagen, estas seguro?
-                </Text>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 10,
-                    justifyContent: "space-evenly",
-                  }}
+ const RenderModal = () =>{
+  return <>
+    <View style={styles.centeredView}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text>
+                Si aceptas vamos a abrir tu navegador para mostrarte la imagen,
+                estas seguro?
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 10,
+                  justifyContent: "space-evenly",
+                }}
+              >
+                <Pressable
+                  onPress={handleLink}
+                  style={[styles.button, styles.buttonClose]}
                 >
-                  <Pressable
-                    onPress={handleLink}
-                    style={[styles.button, styles.buttonClose]}
-                  >
-                    <Text style={styles.textStyle}>Ver Imagen</Text>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}
-                  >
-                    <Text style={styles.textStyle}>Cerrar Modal</Text>
-                  </Pressable>
-                </View>
+                  <Text style={styles.textStyle}>Ver Imagen</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.textStyle}>Cerrar Modal</Text>
+                </Pressable>
               </View>
             </View>
-          </Modal>
-        </View>
-      </>
-    );
-  };
-
-  const ModalTouch = () => {
-    return (
-      <View style={styles.centeredView}>
-        <Modal visible={modalTouch} animationType="slide" transparent={true}>
-          <View style={styles.viewWebView}>
-            <TouchableHighlight
-              onPress={() => setModalTouch(false)}
-              style={[styles.button, styles.buttonClose]}
-            >
-              <Text style={{ fontSize: 25 }}>X</Text>
-            </TouchableHighlight>
-            <WebView
-              source={{ uri: Url }}
-              style={{ width: 300, marginVertical: 100 }}
-            />
           </View>
         </Modal>
+        
       </View>
-    );
-  };
+  </>
+  
+ }
 
-  const FadeInView = (props) => {
-    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+ const ModalTouch = () =>{
+  return (
+    <View style={styles.centeredView}>
+    <Modal 
+    visible={modalTouch}
+    animationType="slide"
+    transparent={true} >
+      <View style={styles.viewWebView}>
+        <TouchableHighlight onPress={()=>setModalTouch(false)} style={[styles.button, styles.buttonClose]}>
+          <Text style={{fontSize:25}}>X</Text>
+        </TouchableHighlight>
+        <WebView source={{uri:Url}} style={{width:300,marginVertical:100}}/>
+      </View>
+    </Modal>
+    </View>
+  )
+ }
 
-    return (
-      <Animated.View // Special animatable View
-        style={{
-          ...props.style,
-          opacity: fadeAnim, // Bind opacity to animated value
-        }}
-      >
-        {props.children}
-      </Animated.View>
-    );
-  };
-  const onLoad = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 4000,
-      useNativeDriver: true,
-    }).start();
-  };
+ 
+ const FadeInView = (props) => {
+  const fadeAnim = useRef(new Animated.Value(2)).current  // Initial value for opacity: 0
+  
+
+
+  return (
+    <Animated.View                 // Special animatable View
+      style={{
+        ...props.style,
+        opacity: fadeAnim,         // Bind opacity to animated value
+      }}
+    >
+      {props.children}
+    </Animated.View>
+  );
+}
+  const onLoad = () =>{
+  Animated.timing(
+    fadeAnim,
+    {
+      toValue: 0.5,
+      duration: 500,
+      useNativeDriver: true
+    }
+  ).start()
+ }
 
   return (
     <>
-      {/* ---------------MODALES---------------------- */}
-      {RenderModal()}
-      {ModalTouch()}
+    {/* ---------------MODALES---------------------- */}
+{RenderModal()} 
+{ModalTouch()} 
+
 
       {/* -----------------CONTENIDO ESTATICO----------------------- */}
-      <StatusBar animated={true} backgroundColor="#B40909"></StatusBar>
+      <StatusBar
+        animated={true}
+        backgroundColor="#B40909"
+        ></StatusBar>
 
       <FadeInView
         style={{
@@ -187,32 +210,21 @@ export default function App() {
           alignItems: "center",
         }}
       >
-        <Image
-          source={require("./images/pokeapi_256.png")}
-          style={styles.logo}
-        />
+      <Image source={require("./images/pokeapi_256.png")} style={styles.logo} />
       </FadeInView>
 
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <View style={{flexDirection:"row",alignItems:"center",justifyContent:"center"}}>
         <Text>Desactivar Busqueda</Text>
-        <Switch
-          onValueChange={() => {
-            setIsEnable(!isEnable);
-            Vibration.vibrate();
-            onLoad;
-          }}
-          value={isEnable}
-        />
-      </View>
+        <Switch onValueChange={()=>
+        {setIsEnable(!isEnable)
+        Vibration.vibrate()
+        onLoad
+        }} value={isEnable} />
+        </View>
 
       {/* ---------------------RENDERIZADO------------------- */}
-
+       
+          
       <FlatList
         data={pokemones}
         renderItem={renderItem}
@@ -244,7 +256,7 @@ const styles = StyleSheet.create({
   logo: {
     marginTop: 50,
     marginLeft: 70,
-    alignSelf: "flex-start",
+    alignSelf:"flex-start"
   },
   pokemones: {
     width: 90,
@@ -298,6 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     elevation: 2,
+    
   },
   buttonOpen: {
     backgroundColor: "grey",
@@ -349,11 +362,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: "center",
   },
-  viewWebView: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.4)",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  viewWebView:{
+    flex:1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    flexDirection:"column",
+    justifyContent:"center",
+    alignItems:"center"
+  }
 });
